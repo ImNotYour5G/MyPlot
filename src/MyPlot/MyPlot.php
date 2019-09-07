@@ -21,7 +21,6 @@ use MyPlot\provider\PocketMoneyProvider;
 use MyPlot\provider\SQLiteDataProvider;
 use MyPlot\provider\YAMLDataProvider;
 use MyPlot\task\ClearPlotTask;
-use MyPlot\task\RoadFillTask;
 use onebone\economyapi\EconomyAPI;
 use pocketmine\block\Block;
 use pocketmine\event\level\LevelLoadEvent;
@@ -234,7 +233,6 @@ class MyPlot extends PluginBase
 		$plotSize = $plotLevel->plotSize;
 		$roadWidth = $plotLevel->roadWidth;
 		$totalSize = $plotSize + $roadWidth;
-		// TODO: check for merged plots
 		if($x >= 0) {
 			$X = (int) floor($x / $totalSize);
 			$difX = $x % $totalSize;
@@ -268,7 +266,6 @@ class MyPlot extends PluginBase
 		$plotLevel = $this->getLevelSettings($plot->levelName);
 		if($plotLevel === null)
 			return null;
-		// TODO: check for merged plots
 		$plotSize = $plotLevel->plotSize;
 		$roadWidth = $plotLevel->roadWidth;
 		$totalSize = $plotSize + $roadWidth;
@@ -279,7 +276,7 @@ class MyPlot extends PluginBase
 	}
 
 	/**
-	 * Returns the original AABB of the given plot
+	 * Returns the AABB of the plot area
 	 *
 	 * @api
 	 *
@@ -301,89 +298,7 @@ class MyPlot extends PluginBase
 			max($pos->x, $pos->x + $plotSize),
 			$pos->getLevel()->getWorldHeight(),
 			max($pos->z, $pos->z + $plotSize)
-		); // TODO: return multiple AABBs for merged plots
-	}
-
-	/**
-	 * @param Plot $plot The plot that is to be expanded
-	 * @param int $direction The Vector3 direction value to expand towards
-	 *
-	 * @return bool
-	 */
-	public function mergePlots(Plot $plot, int $direction) : bool {
-		$plotLevel = $this->getLevelSettings($plot->levelName);
-		if($plotLevel === null)
-			return false;
-
-		/** @var Plot[] $toMerge */
-		$toMerge = [];
-		$mergedPlots = $this->getProvider()->getMergedPlots($plot);
-		$pos = $this->getPlotPosition($plot);
-		$nextPlotPos = $pos->getSide($direction, $plotLevel->plotSize);
-		$p = $this->getPlotByPosition($nextPlotPos);
-		if(!in_array($p, $mergedPlots)) {
-			$toMerge[] = $p;
-		}
-		foreach($mergedPlots as $mergedPlot) {
-			$pos = $this->getPlotPosition($mergedPlot);
-			$nextPlotPos = $pos->getSide($direction, $plotLevel->plotSize);
-			$p = $this->getPlotByPosition($nextPlotPos);
-			if(!in_array($p, $mergedPlots)) {
-				$toMerge[] = $p;
-			}
-		}
-		foreach($toMerge as $_) {
-			if($_->owner !== $plot->owner)
-				return false;
-		}
-		/** @var int $maxBlocksPerTick */
-		$maxBlocksPerTick = $this->getConfig()->get("ClearBlocksPerTick", 256);
-		$this->clearRoadsBetween($plot, $this->getFurthestMerge($plot, $toMerge), $maxBlocksPerTick);
-		return $this->getProvider()->mergePlots(...$toMerge);
-	}
-
-	/**
-	 * @param Plot $plot
-	 *
-	 * @return bool
-	 */
-	public function isPlotMerged(Plot $plot) : bool {
-		$base = $this->dataProvider->getMergedBase($plot);
-		return $plot !== $base;
-	}
-
-	/**
-	 * @param Plot $plot
-	 *
-	 * @param Plot[]|null $list if provided will use these plots instead of database
-	 *
-	 * @return Plot
-	 */
-	public function getFurthestMerge(Plot $plot, ?array $list = null) : Plot {
-		/** @var Plot $furthest */
-		$furthest = null;
-		if(empty($list)) {
-			// TODO: math
-			return $furthest;
-		}
-		// TODO: math
-		return $furthest;
-	}
-
-	/**
-	 * @param Plot $start
-	 * @param Plot $end
-	 *
-	 * @param int $maxBlocksPerTick
-	 *
-	 * @return bool
-	 */
-	public function clearRoadsBetween(Plot $start, Plot $end, int $maxBlocksPerTick = 256) : bool {
-		if(!$this->isLevelLoaded($start->levelName) or $start->levelName !== $end->levelName) {
-			return false;
-		}
-		$this->getScheduler()->scheduleTask(new RoadFillTask($this, $start, $end, $maxBlocksPerTick));
-		return true;
+		);
 	}
 
 	/**

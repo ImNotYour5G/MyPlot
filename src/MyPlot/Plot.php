@@ -5,14 +5,7 @@ namespace MyPlot;
 class Plot
 {
 
-	/** @var string  */
-	public $levelName = "", $name = "", $owner = "", $biome = "PLAINS";
-	/** @var int  */
-	public $X = -0, $Z = -0, $id = -1;
-	/** @var array  */
-	public $helpers = [], $denied = [];
-	/** @var bool $pvp */
-	public $pvp = true;
+	public $levelName = "", $X = -0, $Z = -0, $name = "", $owner = "", $helpers = [], $denied = [], $biome = "PLAINS", $pvp = true, $id = -1;
 
 	/**
 	 * Plot constructor.
