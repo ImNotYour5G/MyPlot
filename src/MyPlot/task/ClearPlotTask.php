@@ -28,8 +28,8 @@ class ClearPlotTask extends Task {
 		$this->level = $this->plotBeginPos->getLevel();
 		$plotLevel = $plugin->getLevelSettings($plot->levelName);
 		$plotSize = $plotLevel->plotSize;
-		$this->xMax = $this->plotBeginPos->x + $plotSize; // TODO: merged plots
-		$this->zMax = $this->plotBeginPos->z + $plotSize; // TODO: merged plots
+		$this->xMax = $this->plotBeginPos->x + $plotSize;
+		$this->zMax = $this->plotBeginPos->z + $plotSize;
 		$this->height = $plotLevel->groundHeight;
 		$this->bottomBlock = $plotLevel->bottomBlock;
 		$this->plotFillBlock = $plotLevel->plotFillBlock;
