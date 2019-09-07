@@ -16,6 +16,7 @@ use MyPlot\subcommand\HomesSubCommand;
 use MyPlot\subcommand\HomeSubCommand;
 use MyPlot\subcommand\InfoSubCommand;
 use MyPlot\subcommand\ListSubCommand;
+use MyPlot\subcommand\MergeSubCommand;
 use MyPlot\subcommand\MiddleSubCommand;
 use MyPlot\subcommand\NameSubCommand;
 use MyPlot\subcommand\PvpSubCommand;
@@ -69,6 +70,7 @@ class Commands extends PluginCommand
 		$this->loadSubCommand(new SetOwnerSubCommand($plugin, "setowner"));
 		$this->loadSubCommand(new ListSubCommand($plugin, "list"));
 		$this->loadSubCommand(new PvpSubCommand($plugin, "pvp"));
+		$this->loadSubCommand(new MergeSubCommand($plugin, "merge"));
 		$plugin->getLogger()->debug("Commands Registered to MyPlot");
 	}
 

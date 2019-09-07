@@ -59,6 +59,8 @@ permissions:
         default: true
       myplot.command.done:
         default: true
+      myplot.command.merge:
+        default: true
       myplot.command.middle:
         default: true
       myplot.command.list:
@@ -101,6 +103,8 @@ permissions:
       myplot.admin.warp:
         default: op
       myplot.admin.done:
+        default: op
+      myplot.admin.merge:
         default: op
       myplot.admin.middle:
         default: true
